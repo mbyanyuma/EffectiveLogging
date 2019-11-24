@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BookClub.Entities;
@@ -20,7 +21,10 @@ namespace BookClub.UI.Pages
 
         public async Task OnGetAsync()
         {
-            _logger.LogInformation("About to call API to get book list");
+            var userId = User.Claims.FirstOrDefault(a => a.Type == "sub")?.Value;
+
+            _logger.LogInformation("{UserName} - ({UserId}) is about to call API to get all books. {Claims}",
+                User.Identity.Name, userId, User.Claims);
             using (var http = new HttpClient(new StandardHttpMessageHandler(HttpContext)))
             {
                 var response = await http.GetAsync("https://localhost:44322/api/Book");
